@@ -1,0 +1,5 @@
+# DialogBuilder
+自定义的IOS简洁风格的Dialog
+
+代码很简单，只是对dialog做了一层简单的封装，统一工程中dialog的风格，demo里注明使用方式，可以直接creat一个默认的dialog，也可以
+根据自己需求再往rootview里设置contentview。

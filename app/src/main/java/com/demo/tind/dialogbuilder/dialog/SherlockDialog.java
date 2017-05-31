@@ -18,7 +18,7 @@ import com.demo.tind.dialogbuilder.R;
  */
 
 public class SherlockDialog {
-    public class Builder implements BuilderInterface {
+    public static class Builder implements BuilderInterface {
         private Context mContext;
         private final ControllerParams mParams;
         private Controller mController;
@@ -85,7 +85,7 @@ public class SherlockDialog {
             return this;
         }
 
-        public Builder setPositiveButton(String text,  OnPositiveListener listener)  {
+        public Builder setPositiveButton(String text, OnPositiveListener listener) {
             mParams.setPositiveListener(listener);
             mParams.setPositiveText(text);
             return this;
@@ -93,6 +93,7 @@ public class SherlockDialog {
 
         /**
          * 建造dialog
+         *
          * @return dialog
          */
         public Dialog create() {
@@ -104,6 +105,7 @@ public class SherlockDialog {
 
         /**
          * 建造一个默认的dialog
+         *
          * @param onPositiveListener 确认按键监听
          * @param onNegativeListener 取消按键监听
          * @return dialog
@@ -124,7 +126,7 @@ public class SherlockDialog {
         }
     }
 
-    private class Controller implements View.OnClickListener {
+    private static class Controller implements View.OnClickListener,BuilderInterface {
         private Context mContext;
         private TextView mTvTitle;
         private TextView mTvMessage;
@@ -141,7 +143,7 @@ public class SherlockDialog {
         private final LinearLayout mLlContent;
 
 
-        private   Controller(Context context) {
+        private Controller(Context context) {
             mContext = context;
             mRootView = View.inflate(mContext, R.layout.view_dialog_warm_tip, null);
             mLlContent = (LinearLayout) mRootView.findViewById(R.id.ll_content);
@@ -179,32 +181,38 @@ public class SherlockDialog {
         }
 
 
-        private void setTitle(String title) {
+        public Controller setTitle(String title) {
             mTvTitle = (TextView) mRootView.findViewById(R.id.title);
             if (mTvTitle != null) {
                 mTvTitle.setText(title);
             }
+            return  this;
         }
 
-        private void setMessage(String message) {
+        public Controller setMessage(String message) {
             mTvMessage = (TextView) mRootView.findViewById(R.id.message);
             if (mTvMessage != null) {
                 mTvMessage.setText(message);
             }
-
+            return  this;
         }
 
-        private void setIcon(int iconId) {
+        public Controller setIcon(int iconId) {
             mIvIcon = (ImageView) mRootView.findViewById(R.id.icon);
             if (mIvIcon != null) {
                 mIvIcon.setImageResource(iconId);
                 mIvIcon.setVisibility(View.VISIBLE);
             }
+            return  this;
+        }
 
+        @Override
+        public Controller setCancelable(boolean cancelable) {
+            return null;
         }
 
 
-        private void setNegativeButton(String negativeText, OnNegativeListener listener) {
+        public Controller setNegativeButton(String negativeText, OnNegativeListener listener) {
             mTvNegative = (TextView) mRootView.findViewById(R.id.dialog_cancel);
             mVerticalLine = mRootView.findViewById(R.id.line_vertical);
             if (mTvNegative != null) {
@@ -217,9 +225,10 @@ public class SherlockDialog {
                 }
 
             }
+            return this;
         }
 
-        private void setPositiveButton(String positiveText, OnPositiveListener listener) {
+        public Controller setPositiveButton(String positiveText, OnPositiveListener listener) {
             mTvPositive = (TextView) mRootView.findViewById(R.id.dialog_commit);
 
             if (mTvPositive != null) {
@@ -228,6 +237,7 @@ public class SherlockDialog {
                 setOnPositiveListener(listener);
                 mHorizontalLine.setVisibility(View.VISIBLE);
             }
+            return this;
         }
 
         private void setOnNegativeListener(OnNegativeListener onNegativeListener) {
@@ -261,17 +271,17 @@ public class SherlockDialog {
 
     public interface BuilderInterface {
 
-        Builder setTitle(String title);
+        BuilderInterface setTitle(String title);
 
-        Builder setMessage(String message);
+        BuilderInterface setMessage(String message);
 
-        Builder setIcon(int incoId);
+        BuilderInterface setIcon(int incoId);
 
-        Builder setCancelable(boolean cancelable);
+        BuilderInterface setCancelable(boolean cancelable);
 
-        Builder setNegativeButton(String negativeText, OnNegativeListener listener);
+        BuilderInterface setNegativeButton(String negativeText, OnNegativeListener listener);
 
-        Builder setPositiveButton(String positiveText, OnPositiveListener listener);
+        BuilderInterface setPositiveButton(String positiveText, OnPositiveListener listener);
     }
 
 
@@ -295,7 +305,7 @@ public class SherlockDialog {
 
             if (mContentView != null) {
                 controller.setContentView(mContentView, dialog);
-            }else {
+            } else {
                 controller.setContentView(mLayoutId, dialog);
             }
             dialog.setCancelable(mCancelable);

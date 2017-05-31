@@ -20,7 +20,7 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState  ) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
 //        initDialog();
@@ -29,23 +29,23 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
     }
 
     private void initDefaultDialog() {
-        SherlockDialog.Builder builder = new SherlockDialog().new Builder(this);
-         mDialog = builder.createDefault(this, this);
+        SherlockDialog.Builder builder = new SherlockDialog.Builder(this);
+        mDialog = builder.createDefault(this, this);
         builder.reSetTitle("重新设置Tiltle");
     }
 
     private void initEditDialog() {
-        SherlockDialog.Builder builder = new SherlockDialog().new Builder(this);
+        SherlockDialog.Builder builder = new SherlockDialog.Builder(this);
 
         EditText editText = new EditText(this);
         builder.setContentView(editText);
-         mDialog = builder.createDefault(this, this);
+        mDialog = builder.createDefault(this, this);
 
     }
 
     private void initDialog() {
 
-        SherlockDialog.Builder builder = new SherlockDialog().new Builder(this);
+        SherlockDialog.Builder builder = new SherlockDialog.Builder(this);
         mDialog = builder.setTitle("温馨提示")
                 .setMessage("确认提交吗？")
                 .setPositiveButton("确认", new SherlockDialog.OnPositiveListener() {
@@ -65,13 +65,13 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
                 .setIcon(R.mipmap.ic_launcher_round).create();
     }
 
-    public void button1(View view){
+    public void button1(View view) {
         mDialog.show();
     }
 
     @Override
     public void onPositive(Dialog dialog) {
-    dialog.dismiss();
+        dialog.dismiss();
     }
 
     @Override

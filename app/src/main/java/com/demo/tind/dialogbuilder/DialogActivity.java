@@ -3,20 +3,27 @@ package com.demo.tind.dialogbuilder;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.demo.tind.dialogbuilder.dialog.MyDialogUtils;
 import com.demo.tind.dialogbuilder.dialog.SherlockDialog;
 
 /**
  * Created by Administrator on 2017/5/5.
  */
 
-public class DialogActivity extends AppCompatActivity implements SherlockDialog.OnPositiveListener, SherlockDialog.OnNegativeListener {
+public class DialogActivity extends AppCompatActivity implements SherlockDialog.OnPositiveListener, SherlockDialog.OnNegativeListener, View.OnClickListener {
 
     private Dialog mDialog;
+    private AlertDialog mAlertDialog;
+    private View mAletView;
 
 
     @Override
@@ -78,4 +85,34 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
     public void onNegative(Dialog dialog) {
         dialog.dismiss();
     }
+
+    public void initTestDialog() {
+        mAlertDialog = MyDialogUtils.initDialog(this, R.layout.dialog_gs_plan_view, this);
+        mAletView = MyDialogUtils.getView();
+        mAlertDialog.setView(mAletView);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    private void showEditDialog(Button btn, String message) {
+        mDialog.show();
+        setDialogWindowView();
+
+    }
+
+    private void setDialogWindowView() {
+        Window mWindow = mDialog.getWindow();
+        mWindow.setContentView(View.inflate(DialogActivity.this, R.layout.dialog_gs_plan_view, null), MyDialogUtils.getPrams(this));
+        EditText mDialogEditText = (EditText) mWindow.findViewById(R.id.edit);
+        TextView mDialogTvTitle = (TextView) mWindow.findViewById(R.id.title);
+        TextView tvCancel = (TextView) mWindow.findViewById(R.id.dialog_cancel);
+        TextView tvCommit = (TextView) mWindow.findViewById(R.id.dialog_commit);
+        tvCommit.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+
+    }
+
 }

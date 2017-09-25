@@ -40,7 +40,6 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
         EditText editText = new EditText(this);
         builder.setContentView(editText);
         mDialog = builder.createDefault(this, this);
-
     }
 
     private void initDialog() {

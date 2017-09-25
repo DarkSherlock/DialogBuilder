@@ -2,6 +2,10 @@ package com.demo.tind.dialogbuilder.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,69 +27,131 @@ public class SherlockDialog {
         private final ControllerParams mParams;
         private Controller mController;
 
-        public Builder(Context context) {
+        public Builder(@NonNull Context context) {
             mContext = context;
             mParams = new ControllerParams();
             mController = new Controller(mContext);
         }
 
-        public Builder setContentView(int layoutId) {
+        /**
+         * Title 下方的具体内容的布局
+         * {@link Controller#setContentView(int, Dialog)} 最终调用此方法 将布局渲染出来
+         *
+         * @param layoutId 布局ID
+         */
+        public Builder setContentView(@LayoutRes int layoutId) {
             mParams.setLayoutId(layoutId);
             return this;
         }
 
-        public Builder setContentView(View view) {
+        /**
+         * Title 下方的具体内容的布局
+         * {@link Controller#setContentView(View, Dialog)}  最终调用此方法 将布局渲染出来
+         *
+         * @param view 添加的view
+         */
+        public Builder setContentView(@NonNull View view) {
             mParams.setContentView(view);
             return this;
         }
 
-        public Builder setTitle(String title) {
+        public Builder setTitle() {
+            setTitle("温馨提示");
+            return this;
+        }
+
+        /**
+         * {@link Controller#setTitle(String)} 最终调用此方法 将title赋值
+         *
+         * @param title 标题
+         */
+        public Builder setTitle(@Nullable String title) {
             mParams.setTitle(title);
             return this;
         }
 
-        public Builder reSetTitle(String title) {
+        /**
+         * {@link Controller#setTitle(String)} 最终调用此方法 将title赋值
+         *
+         * @param title 标题
+         */
+        public Builder reSetTitle(@Nullable String title) {
             mParams.setTitle(title);
             mController.setTitle(title);
             return this;
         }
 
-        public Builder reSetMessage(String message) {
+        /**
+         * {@link Controller#setMessage(String)} 最终调用此方法 将message赋值
+         *
+         * @param message
+         */
+        public Builder setMessage(@Nullable String message) {
+            mParams.setMessage(message);
+            return this;
+        }
+
+        public Builder reSetMessage(@Nullable String message) {
             mParams.setMessage(message);
             mController.setMessage(message);
             return this;
         }
 
-        public Builder reSetIcon(int iconId) {
+        public Builder reSetIcon(@DrawableRes int iconId) {
             mParams.setIconId(iconId);
             mController.setIcon(iconId);
             return this;
         }
 
-        public Builder setMessage(String message) {
-            mParams.setMessage(message);
-            return this;
-        }
-
-        public Builder setIcon(int iconId) {
+        /**
+         * {@link Controller#setIcon(int)}
+         *
+         * @param iconId
+         */
+        public Builder setIcon(@DrawableRes int iconId) {
             mParams.setIconId(iconId);
             return this;
         }
 
+        /**
+         * {@link Controller#setCancelable(boolean)}
+         *
+         * @param cancelable
+         */
         public Builder setCancelable(boolean cancelable) {
             mParams.setCancelable(cancelable);
             return this;
         }
 
-
-        public Builder setNegativeButton(String text, OnNegativeListener listener) {
-            mParams.setNegativeListener(listener);
-            mParams.setNegativeText(text);
-
+        /**
+         * {@link Controller#setNegativeButton(String, OnNegativeListener)}
+         *
+         * @param listener
+         * @return
+         */
+        public Builder setNegativeButton(@Nullable OnNegativeListener listener) {
+            setNegativeButton("取消", listener);
             return this;
         }
 
-        public Builder setPositiveButton(String text, OnPositiveListener listener) {
+        /**
+         * {@link Controller#setPositiveButton(String, OnPositiveListener)}
+         *
+         * @param listener
+         * @return
+         */
+        public Builder setPositiveButton(@Nullable OnPositiveListener listener) {
+            setPositiveButton("确定", listener);
+            return this;
+        }
+
+        public Builder setNegativeButton(@Nullable String text, @Nullable OnNegativeListener listener) {
+            mParams.setNegativeListener(listener);
+            mParams.setNegativeText(text);
+            return this;
+        }
+
+        public Builder setPositiveButton(@Nullable String text, @Nullable OnPositiveListener listener) {
             mParams.setPositiveListener(listener);
             mParams.setPositiveText(text);
             return this;
@@ -109,8 +175,10 @@ public class SherlockDialog {
          * @param onPositiveListener 确认按键监听
          * @param onNegativeListener 取消按键监听
          * @return dialog
+         * {@link ControllerParams#apply(Controller, Dialog)} 最终将属性应用于dialog;
          */
-        public Dialog createDefault(OnPositiveListener onPositiveListener, OnNegativeListener onNegativeListener) {
+        public Dialog createDefault(@Nullable OnPositiveListener onPositiveListener,
+                                    @Nullable OnNegativeListener onNegativeListener) {
             Dialog dialog = new Dialog(mContext, R.style.AlertDialogStyle);
             build(onPositiveListener, onNegativeListener);
             mParams.apply(mController, dialog);
@@ -126,7 +194,7 @@ public class SherlockDialog {
         }
     }
 
-    private static class Controller implements View.OnClickListener,BuilderInterface {
+    private static class Controller implements View.OnClickListener, BuilderInterface {
         private Context mContext;
         private TextView mTvTitle;
         private TextView mTvMessage;
@@ -150,7 +218,7 @@ public class SherlockDialog {
             mHorizontalLine = mRootView.findViewById(R.id.line_horizontal);
         }
 
-        private void setContentView(int layoutResID, Dialog dialog) {
+        private void setContentView(@LayoutRes int layoutResID, Dialog dialog) {
             if (layoutResID == -1) {
 
             } else {
@@ -164,6 +232,10 @@ public class SherlockDialog {
 
         private void setContentView(View view, Dialog dialog) {
             mLlContent.removeAllViews();
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
             mLlContent.addView(view);
             mDialog = dialog;
             dialog.setContentView(mRootView, getPrams(mContext));
@@ -180,13 +252,12 @@ public class SherlockDialog {
 
         }
 
-
         public Controller setTitle(String title) {
             mTvTitle = (TextView) mRootView.findViewById(R.id.title);
             if (mTvTitle != null) {
                 mTvTitle.setText(title);
             }
-            return  this;
+            return this;
         }
 
         public Controller setMessage(String message) {
@@ -194,7 +265,7 @@ public class SherlockDialog {
             if (mTvMessage != null) {
                 mTvMessage.setText(message);
             }
-            return  this;
+            return this;
         }
 
         public Controller setIcon(int iconId) {
@@ -203,7 +274,7 @@ public class SherlockDialog {
                 mIvIcon.setImageResource(iconId);
                 mIvIcon.setVisibility(View.VISIBLE);
             }
-            return  this;
+            return this;
         }
 
         @Override
@@ -328,8 +399,6 @@ public class SherlockDialog {
             if (mIconId != -1) {
                 controller.setIcon(mIconId);
             }
-
-
         }
 
 

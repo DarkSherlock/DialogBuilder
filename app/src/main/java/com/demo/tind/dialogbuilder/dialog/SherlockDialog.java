@@ -220,7 +220,7 @@ public class SherlockDialog {
 
         private void setContentView(@LayoutRes int layoutResID, Dialog dialog) {
             if (layoutResID == -1) {
-
+                throw new IllegalArgumentException("错误的布局ID");
             } else {
                 mContentView = View.inflate(mContext, layoutResID, null);
                 mLlContent.removeAllViews();

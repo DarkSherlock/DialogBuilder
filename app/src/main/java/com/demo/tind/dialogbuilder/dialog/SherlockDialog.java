@@ -218,13 +218,17 @@ public class SherlockDialog {
             mHorizontalLine = mRootView.findViewById(R.id.line_horizontal);
         }
 
-        private void setContentView(@LayoutRes int layoutResID, Dialog dialog) {
+        private void setContentView (@LayoutRes int layoutResID, Dialog dialog) {
             if (layoutResID == -1) {
-                throw new IllegalArgumentException("错误的布局ID");
+                //默认状态下
             } else {
-                mContentView = View.inflate(mContext, layoutResID, null);
-                mLlContent.removeAllViews();
-                mLlContent.addView(mContentView);
+                try {
+                    mContentView = View.inflate(mContext, layoutResID, null);
+                    mLlContent.removeAllViews();
+                    mLlContent.addView(mContentView);
+                }catch (Exception e){
+                    throw  new IllegalArgumentException("非法的布局ID");
+                }
             }
             mDialog = dialog;
             dialog.setContentView(mRootView, getPrams(mContext));
@@ -330,11 +334,14 @@ public class SherlockDialog {
                     if (mOnNegativeListener != null) {
                         mOnNegativeListener.onNegative(mDialog);
                     }
+
+                    mDialog.dismiss();
                     break;
                 case R.id.dialog_commit:
                     if (mOnPositiveListener != null) {
                         mOnPositiveListener.onPositive(mDialog);
                     }
+                    mDialog.dismiss();
                     break;
             }
         }

@@ -70,12 +70,12 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
 
     @Override
     public void onPositive(Dialog dialog) {
-        dialog.dismiss();
+//        dialog.dismiss();
     }
 
     @Override
     public void onNegative(Dialog dialog) {
-        dialog.dismiss();
+//        dialog.dismiss();
     }
 
 

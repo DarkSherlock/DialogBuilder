@@ -35,23 +35,45 @@ public class SherlockDialog {
 
         /**
          * Title 下方的具体内容的布局
-         * {@link Controller#setContentView(int, Dialog)} 最终调用此方法 将布局渲染出来
+         * {@link Controller#setContentView(int, Dialog, LinearLayout.LayoutParams)} 最终调用此方法 将布局渲染出来
          *
          * @param layoutId 布局ID
          */
         public Builder setContentView(@LayoutRes int layoutId) {
+            return setContentView(layoutId, null);
+        }
+
+        /**
+         * Title 下方的具体内容的布局
+         * {@link Controller#setContentView(View, Dialog, LinearLayout.LayoutParams)}  最终调用此方法 将布局渲染出来
+         *
+         * @param view 添加的view
+         */
+        public Builder setContentView(@NonNull View view) {
+            return setContentView(view, null);
+        }
+
+        /**
+         * Title 下方的具体内容的布局
+         * {@link Controller#setContentView(int, Dialog, LinearLayout.LayoutParams)} 最终调用此方法 将布局渲染出来
+         *
+         * @param layoutId 布局ID
+         */
+        public Builder setContentView(@LayoutRes int layoutId, LinearLayout.LayoutParams layoutParams) {
             mParams.setLayoutId(layoutId);
+            mParams.setLayoutParams(layoutParams);
             return this;
         }
 
         /**
          * Title 下方的具体内容的布局
-         * {@link Controller#setContentView(View, Dialog)}  最终调用此方法 将布局渲染出来
+         * {@link Controller#setContentView(View, Dialog, LinearLayout.LayoutParams)}  最终调用此方法 将布局渲染出来
          *
          * @param view 添加的view
          */
-        public Builder setContentView(@NonNull View view) {
+        public Builder setContentView(@NonNull View view, LinearLayout.LayoutParams layoutParams) {
             mParams.setContentView(view);
+            mParams.setLayoutParams(layoutParams);
             return this;
         }
 
@@ -218,29 +240,38 @@ public class SherlockDialog {
             mHorizontalLine = mRootView.findViewById(R.id.line_horizontal);
         }
 
-        private void setContentView (@LayoutRes int layoutResID, Dialog dialog) {
+        private void setContentView(@LayoutRes int layoutResID, Dialog dialog, LinearLayout.LayoutParams layoutParams) {
             if (layoutResID == -1) {
                 //默认状态下
             } else {
                 try {
                     mContentView = View.inflate(mContext, layoutResID, null);
                     mLlContent.removeAllViews();
-                    mLlContent.addView(mContentView);
-                }catch (Exception e){
-                    throw  new IllegalArgumentException("非法的布局ID");
+                    if (layoutParams == null) {
+                        mLlContent.addView(mContentView);
+                    } else {
+                        mLlContent.addView(mContentView, layoutParams);
+                    }
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("非法的布局ID");
                 }
             }
             mDialog = dialog;
             dialog.setContentView(mRootView, getPrams(mContext));
         }
 
-        private void setContentView(View view, Dialog dialog) {
+        private void setContentView(View view, Dialog dialog, LinearLayout.LayoutParams layoutParams) {
             mLlContent.removeAllViews();
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
                 parent.removeView(view);
             }
-            mLlContent.addView(view);
+            if (layoutParams == null) {
+                mLlContent.addView(view);
+            } else {
+                mLlContent.addView(view, layoutParams);
+            }
+
             mDialog = dialog;
             dialog.setContentView(mRootView, getPrams(mContext));
         }
@@ -316,13 +347,11 @@ public class SherlockDialog {
         }
 
         private void setOnNegativeListener(OnNegativeListener onNegativeListener) {
-
             mOnNegativeListener = onNegativeListener;
             mTvNegative.setOnClickListener(this);
         }
 
         private void setOnPositiveListener(OnPositiveListener onPositiveListener) {
-
             mOnPositiveListener = onPositiveListener;
             mTvPositive.setOnClickListener(this);
         }
@@ -334,7 +363,6 @@ public class SherlockDialog {
                     if (mOnNegativeListener != null) {
                         mOnNegativeListener.onNegative(mDialog);
                     }
-
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_commit:
@@ -377,14 +405,14 @@ public class SherlockDialog {
         private OnPositiveListener mPositiveListener;
         private OnNegativeListener mNegativeListener;
         private View mContentView;
-
+        private LinearLayout.LayoutParams mLayoutParams;
 
         private void apply(Controller controller, Dialog dialog) {
 
             if (mContentView != null) {
-                controller.setContentView(mContentView, dialog);
+                controller.setContentView(mContentView, dialog, mLayoutParams);
             } else {
-                controller.setContentView(mLayoutId, dialog);
+                controller.setContentView(mLayoutId, dialog, mLayoutParams);
             }
             dialog.setCancelable(mCancelable);
             if (mCancelable) {
@@ -415,6 +443,14 @@ public class SherlockDialog {
 
         private void setLayoutId(int layoutId) {
             mLayoutId = layoutId;
+        }
+
+        public LinearLayout.LayoutParams getLayoutParams() {
+            return mLayoutParams;
+        }
+
+        public void setLayoutParams(LinearLayout.LayoutParams layoutParams) {
+            mLayoutParams = layoutParams;
         }
 
         public String getTitle() {

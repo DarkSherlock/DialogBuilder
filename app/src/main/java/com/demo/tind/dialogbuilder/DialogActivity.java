@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.demo.tind.dialogbuilder.dialog.SherlockDialog;
@@ -25,7 +27,19 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
         setContentView(R.layout.activity_dialog);
 //        initDialog();
 //        initEditDialog();
-        initDefaultDialog();
+//        initDefaultDialog();
+        init();
+    }
+
+    private void init() {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(30,30,30,30);
+        mDialog = new SherlockDialog.Builder(this).setTitle().setContentView(R.layout.view_dialog,layoutParams).setPositiveButton(new SherlockDialog.OnPositiveListener() {
+            @Override
+            public void onPositive(Dialog dialog) {
+
+            }
+        }).create();
     }
 
     private void initDefaultDialog() {

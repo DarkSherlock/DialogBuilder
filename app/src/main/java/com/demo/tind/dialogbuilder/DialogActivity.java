@@ -34,7 +34,7 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
     private void init() {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(30,30,30,30);
-        mDialog = new SherlockDialog.Builder(this).setTitle().setContentView(R.layout.view_dialog,layoutParams).setPositiveButton(new SherlockDialog.OnPositiveListener() {
+        mDialog = new SherlockDialog.Builder(this).setTitle("ceshi").setContentView(R.layout.view_dialog,layoutParams).setPositiveButton(new SherlockDialog.OnPositiveListener() {
             @Override
             public void onPositive(Dialog dialog) {
 
@@ -44,8 +44,13 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
 
     private void initDefaultDialog() {
         SherlockDialog.Builder builder = new SherlockDialog.Builder(this);
-        mDialog = builder.createDefault(this, this);
-        builder.reSetTitle("重新设置Tiltle");
+        mDialog = builder.createSubmit(new SherlockDialog.OnPositiveListener() {
+            @Override
+            public void onPositive(Dialog dialog) {
+
+            }
+        });
+        // TODO: 2018/9/30 resetTitle
     }
 
     private void initEditDialog() {
@@ -53,7 +58,17 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
 
         EditText editText = new EditText(this);
         builder.setContentView(editText);
-        mDialog = builder.createDefault(this, this);
+        mDialog = builder.createCancelAndSubmit(new SherlockDialog.OnPositiveListener() {
+            @Override
+            public void onPositive(Dialog dialog) {
+
+            }
+        }, new SherlockDialog.OnNegativeListener() {
+            @Override
+            public void onNegative(Dialog dialog) {
+
+            }
+        });
     }
 
     private void initDialog() {
@@ -75,7 +90,8 @@ public class DialogActivity extends AppCompatActivity implements SherlockDialog.
                         dialog.dismiss();
                     }
                 })
-                .setIcon(R.mipmap.ic_launcher_round).create();
+                .create();
+//                .setIcon(R.mipmap.ic_launcher_round).create();
     }
 
     public void button1(View view) {
